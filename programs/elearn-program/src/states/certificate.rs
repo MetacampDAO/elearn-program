@@ -1,0 +1,51 @@
+use anchor_lang::prelude::*;
+
+pub const CERTIFICATE_PDA_SEED: &[u8] = b"certificate-seed";
+
+pub const MAX_STUDENT_NAME_LEN: usize = 64;
+pub const MAX_STUDENT_GRADE_LEN: usize = 32;
+
+pub const MAX_COURSE_NAME_LEN: usize = 64;
+
+pub const MAX_SCHOOL_NAME_LEN: usize = 64;
+pub const MAX_SCHOOL_URI_LEN: usize = 200;
+
+pub const MAX_ISSUER_NAME_LEN: usize = 64;
+pub const MAX_ISSUER_ROLE_LEN: usize = 32;
+pub const MAX_ISSUER_URI_LEN: usize = 200;
+
+
+
+pub const MAX_CERTIFICATE_LEN: usize = 32 // batch pda
+  + 32 // manager key
+  + 32 // student key
+  + 8 // completion date
+  + MAX_STUDENT_NAME_LEN
+  + MAX_STUDENT_NAME_LEN
+  + MAX_STUDENT_GRADE_LEN
+  + MAX_COURSE_NAME_LEN
+  + MAX_SCHOOL_NAME_LEN
+  + MAX_SCHOOL_URI_LEN
+  + MAX_ISSUER_NAME_LEN
+  + MAX_ISSUER_ROLE_LEN
+  + MAX_ISSUER_URI_LEN;
+
+#[account]
+pub struct Certificate {
+  pub batch_pda: Pubkey,
+  pub manager_key: Pubkey,
+  pub student_key: Pubkey,
+  pub complete_date: u64,
+  pub student_name: String,
+  pub student_grade: String,
+  pub course_name: String,
+  pub school_name: String,
+  pub school_uri: String,
+  pub issuer_name: String,
+  pub issuer_role:String,
+  pub issuer_uri: String,
+}
+
+impl Certificate {
+
+}
