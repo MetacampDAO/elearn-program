@@ -7,7 +7,7 @@ pub mod states;
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]
-pub mod elearn_program {
+pub mod elearn {
     use super::*;
 
     pub fn initialize_manager(
