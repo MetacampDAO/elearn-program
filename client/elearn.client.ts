@@ -171,7 +171,7 @@ export class ElearnClient extends AccountUtils {
     const nextBatchCount = managerProofAcc.batchCount
     const [batch, batchBump] = await this.findBatchPDA(managerPk, Number(nextBatchCount))
 
-    const txSig = await this.elearnProgram.methods.createBatch(nextBatchCount, batchName, batchBump)
+    const txSig = await this.elearnProgram.methods.createBatch(batchName, batchBump)
       .accounts({
         manager: managerPk as any,
         managerProof,

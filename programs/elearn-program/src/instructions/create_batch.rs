@@ -33,14 +33,13 @@ impl <'info> CreateBatch <'info> {
 
 pub fn handler (
   ctx: Context<CreateBatch>,
-  batch_num: u64,
   batch_name: String,
   batch_bump: u8
 ) -> Result<()> {
   ctx.accounts.manager_proof.contains_type(PermissionType::BATCH)?;
   ctx.accounts.batch.initialize(
     ctx.accounts.manager.key(),
-    batch_num,
+    ctx.accounts.manager_proof.batch_count,
     batch_name,
     batch_bump
   );
