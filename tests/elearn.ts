@@ -181,7 +181,6 @@ describe("elearn", () => {
 
   it ("Fails to create batch when not authorized", async () => {
     const [manager2PDA, _manager2Bump] = await ec.findManagerProofPDA(manager2.publicKey);
-    const [manager2batch0PDA, manager2batch0Bump] = await ec.findNewBatchPDA(manager2.publicKey);
     await expect(ec.createBatch(
       manager2,
       manager2PDA,
@@ -296,8 +295,6 @@ describe("elearn", () => {
     assert.equal(batch1cert0Acc.issuerName, "JUSTIN WONG")
     assert.equal(batch1cert0Acc.issuerRole, "ACADEMIC DIRECTOR")
     assert.equal(batch1cert0Acc.issuerUri, "")
-    
-
   })
   
 });
