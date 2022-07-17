@@ -160,15 +160,18 @@ export class ElearnClient extends AccountUtils {
   async createBatch (
     manager: PublicKey| Keypair,
     managerProof: PublicKey,
-    batch: PublicKey,
     batchName: string,
-    batchBump: number,
   ) {
     const signers  = [];
     if (isKp(manager)) signers.push(<Keypair>manager)
 
-    const managerPk = isKp(manager)? (<Keypair>manager).publicKey: manager;
-    const txSig = await this.elearnProgram.methods.createBatch(batchName, batchBump)
+    const managerPk = (isKp(manager)? (<Keypair>manager).publicKey: manager) as PublicKey;
+    const [managerProofPDA, _] = await this.findManagerProofPDA(managerPk);
+    const managerProofAcc = await this.fetchManagerProofAcc(managerProofPDA);
+    const nextBatchCount = managerProofAcc.batchCount
+    const [batch, batchBump] = await this.findBatchPDA(managerPk, Number(nextBatchCount))
+
+    const txSig = await this.elearnProgram.methods.createBatch(nextBatchCount, batchName, batchBump)
       .accounts({
         manager: managerPk as any,
         managerProof,

@@ -33,10 +33,16 @@ pub mod elearn {
 
     pub fn create_batch(
         ctx: Context<CreateBatch>,
+        batch_num: u64,
         batch_name: String,
         batch_bump: u8,
     ) -> Result<()> {
-        create_batch::handler(ctx, batch_name, batch_bump)
+        create_batch::handler(
+            ctx, 
+            batch_num,
+            batch_name, 
+            batch_bump
+        )
     }
 
 }
