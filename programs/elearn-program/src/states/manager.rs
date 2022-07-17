@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use common::errors::ErrorCode;
 
-pub const MANAGER_PDA_SEED: &[u8] = b"manager-seed";
+pub const MANAGER_PROOF_SEED: &[u8] = b"manager-seed";
 
 pub const MAX_MANAGER_LEN: usize = 32 // manager pubkey
   + 8   // total batches created

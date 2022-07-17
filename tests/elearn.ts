@@ -12,16 +12,16 @@ describe("elearn", () => {
 
   const ec = new ElearnClient(provider.connection, provider.wallet as any)
 
-  it("Is initialized!", async () => {
+  it("Initialise manager", async () => {
     // Add your test here.
-    const [managerPDA, managerBump] = await ec.findManagerPDA(provider.wallet.publicKey);
+    const [managerPDA, managerBump] = await ec.findManagerProofPDA(provider.wallet.publicKey);
     await ec.initializeManager(
       provider.wallet.publicKey,
       managerPDA,
       managerBump
     );
 
-    const managerPDAAcc = await ec.fetchManagerPDAAcc(managerPDA);
+    const managerPDAAcc = await ec.fetchManagerProofAcc(managerPDA);
 
     assert.equal(managerPDAAcc.managerKey.toBase58(), provider.wallet.publicKey.toBase58());
 

@@ -50,13 +50,13 @@ export class ElearnClient extends AccountUtils {
 
   // --------------------------------------- fetch deserialized accounts
 
-  async fetchManagerPDAAcc(managerPDA: PublicKey) {
+  async fetchManagerProofAcc(managerPDA: PublicKey) {
     return this.elearnProgram.account.manager.fetch(managerPDA);
   }
 
-  // --------------------------------------- find PDA addresses
+  // --------------------------------------- find PDA adsdresses
 
-  async findManagerPDA(managerKey: PublicKey) {
+  async findManagerProofPDA(managerKey: PublicKey) {
     return await PublicKey.findProgramAddress(
       [Buffer.from(anchor.utils.bytes.utf8.encode("manager-seed")), managerKey.toBytes()],
       this.elearnProgram.programId
@@ -69,7 +69,7 @@ export class ElearnClient extends AccountUtils {
 
   async initializeManager (
     master: PublicKey| Keypair,
-    managerPda: PublicKey,
+    managerProof: PublicKey,
     managerBump: number,
   ) {
     const signers  = [];
@@ -80,7 +80,7 @@ export class ElearnClient extends AccountUtils {
       managerBump
     ).accounts({
       master: masterPk as any,
-      managerPda,
+      managerProof,
       systemProgram: SystemProgram.programId
     }).signers(signers)
     .rpc();
