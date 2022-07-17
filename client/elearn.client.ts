@@ -88,4 +88,28 @@ export class ElearnClient extends AccountUtils {
     return { txSig };
   }
 
+  async addManager (
+    admin: PublicKey| Keypair,
+    adminProof: PublicKey,
+    managerKey: PublicKey,
+    managerProof: PublicKey,
+    managerBump: number, 
+  ) {
+    const signers  = [];
+    if (isKp(admin)) signers.push(<Keypair>admin)
+
+    const adminPk = isKp(admin)? (<Keypair>admin).publicKey: admin;
+    const txSig = await this.elearnProgram.methods.addManager(managerBump)
+      .accounts({
+        admin: adminPk as any,
+        adminProof,
+        managerKey,
+        managerProof,
+        systemProgram: SystemProgram.programId
+      }).signers(signers)
+      .rpc();
+
+      return { txSig };
+  }
+
 }

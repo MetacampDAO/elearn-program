@@ -16,4 +16,11 @@ pub mod elearn {
     ) -> Result<()> {
         initialize_manager::handler(ctx, manager_bump)
     }
+
+    pub fn add_manager(
+        ctx: Context<AddManager>,
+        manager_bump: u8,
+    ) -> Result<()> {
+        add_manager::handler(ctx, manager_bump)
+    }
 }

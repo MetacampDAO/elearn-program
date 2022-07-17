@@ -26,8 +26,10 @@ pub enum ErrorCode {
 
     #[msg("unauthorized master")]
     UnauthorizedMaster,
-    
-    Reserved5,
+
+    #[msg("proof key mismatch")]
+    ProofKeyMismatch,
+
     Reserved6,
     Reserved7,
     Reserved8,
