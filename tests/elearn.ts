@@ -142,12 +142,13 @@ describe("elearn", () => {
 
   it ("Creates 2 new batches", async () => {
     const [manager1PDA, _manager1Bump] = await ec.findManagerProofPDA(manager1.publicKey);
-    const [manager1batch0PDA, _manager1batch0Bump] = await ec.findNewBatchPDA(manager1.publicKey);
+    const [manager1batch0PDA, manager1batch0Bump] = await ec.findNewBatchPDA(manager1.publicKey);
     await ec.createBatch(
       manager1,
       manager1PDA,
       manager1batch0PDA,
-      "BACKEND DEVELOPMENT WITH RUST (BATCH 0)"
+      "BACKEND DEVELOPMENT WITH RUST (BATCH 0)",
+      manager1batch0Bump
     );
     
     const manager1batch0Acc = await ec.fetchBatchAcc(manager1batch0PDA);
@@ -156,15 +157,17 @@ describe("elearn", () => {
     assert.equal(manager1batch0Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
     assert.ok(Number(manager1batch0Acc.certificateCount) == 0)
     assert.equal(manager1batch0Acc.batchName, "BACKEND DEVELOPMENT WITH RUST (BATCH 0)")
+    assert.ok(Number(manager1batch0Acc.batchBump) == manager1batch0Bump)
 
     assert.ok(Number(manager1ProofAcc.batchCount) == 1)
 
-    const [manager1batch1PDA, _manager1batch1Bump] = await ec.findNewBatchPDA(manager1.publicKey);
+    const [manager1batch1PDA, manager1batch1Bump] = await ec.findNewBatchPDA(manager1.publicKey);
     await ec.createBatch(
       manager1,
       manager1PDA,
       manager1batch1PDA,
-      "BACKEND DEVELOPMENT WITH RUST (BATCH 1)"
+      "BACKEND DEVELOPMENT WITH RUST (BATCH 1)",
+      manager1batch1Bump
     );
     
     const manager1batch1Acc = await ec.fetchBatchAcc(manager1batch1PDA);
@@ -173,21 +176,21 @@ describe("elearn", () => {
     assert.equal(manager1batch1Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
     assert.ok(Number(manager1batch1Acc.certificateCount) == 0)
     assert.equal(manager1batch1Acc.batchName, "BACKEND DEVELOPMENT WITH RUST (BATCH 1)")
+    assert.ok(Number(manager1batch1Acc.batchBump) == manager1batch1Bump)
 
     assert.ok(Number(manager1ProofAcc.batchCount) == 2)
   })
 
   it ("Fails to create batch when not authorized", async () => {
     const [manager2PDA, _manager2Bump] = await ec.findManagerProofPDA(manager2.publicKey);
-    const [manager2batch0PDA, _manager2batch0Bump] = await ec.findNewBatchPDA(manager2.publicKey);
+    const [manager2batch0PDA, manager2batch0Bump] = await ec.findNewBatchPDA(manager2.publicKey);
     await expect(ec.createBatch(
       manager2,
       manager2PDA,
       manager2batch0PDA,
-      "BACKEND DEVELOPMENT WITH RUST (BATCH 0)"
+      "BACKEND DEVELOPMENT WITH RUST (BATCH 0)",
+      manager2batch0Bump
     )).to.be.rejectedWith("AnchorError occurred. Error Code: WrongPermission. Error Number: 6003. Error Message: wrong permission type.")
   })
-
-
   
 });

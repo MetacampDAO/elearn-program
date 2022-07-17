@@ -161,13 +161,14 @@ export class ElearnClient extends AccountUtils {
     manager: PublicKey| Keypair,
     managerProof: PublicKey,
     batch: PublicKey,
-    batchName: string
+    batchName: string,
+    batchBump: number,
   ) {
     const signers  = [];
     if (isKp(manager)) signers.push(<Keypair>manager)
 
     const managerPk = isKp(manager)? (<Keypair>manager).publicKey: manager;
-    const txSig = await this.elearnProgram.methods.createBatch(batchName)
+    const txSig = await this.elearnProgram.methods.createBatch(batchName, batchBump)
       .accounts({
         manager: managerPk as any,
         managerProof,
