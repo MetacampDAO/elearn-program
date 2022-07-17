@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-elearn = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+elearn = "93XaPPTDiKJGfzSKkHHLn3uu8gpgAUXwhVWR74ps8dgJ"
 
 [registry]
 url = "https://anchor.projectserum.com"
