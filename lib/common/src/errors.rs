@@ -30,7 +30,9 @@ pub enum ErrorCode {
     #[msg("proof key mismatch")]
     ProofKeyMismatch,
 
-    Reserved6,
+    #[msg("batch key mismatch")]
+    BatchKeyMismatch,
+
     Reserved7,
     Reserved8,
     Reserved9,

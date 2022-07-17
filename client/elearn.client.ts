@@ -54,8 +54,12 @@ export class ElearnClient extends AccountUtils {
     return this.elearnProgram.account.manager.fetch(managerPDA);
   }
 
-  async fetchBatchAcc(batchPDA) {
+  async fetchBatchAcc(batchPDA: PublicKey) {
     return this.elearnProgram.account.batch.fetch(batchPDA);
+  }
+
+  async fetchCertificateAcc(certficatePDA: PublicKey) {
+    return this.elearnProgram.account.certificate.fetch(certficatePDA);
   }
 
   // --------------------------------------- find PDA adsdresses
@@ -83,6 +87,23 @@ export class ElearnClient extends AccountUtils {
     const managerProofAcc = await this.fetchManagerProofAcc(managerProofPDA);
     const nextBatchCount = Number(managerProofAcc.batchCount)
     return await this.findBatchPDA(managerKey, nextBatchCount)
+  }
+
+  async findCertificatePDA(batch: PublicKey, certificateCount: number) {
+    return await PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("certificate-seed")), 
+        batch.toBytes(), 
+        toByteArray(certificateCount)
+      ],
+      this.elearnProgram.programId
+    )
+  }
+
+  async findNewCertificatePDA(batch: PublicKey) {
+    const batchAcc = await this.fetchBatchAcc(batch);
+    const nextCertificateCount = Number(batchAcc.certificateCount)
+    return await this.findCertificatePDA(batch, nextCertificateCount) 
   }
   // --------------------------------------- find all PDA addresses
 
@@ -180,5 +201,50 @@ export class ElearnClient extends AccountUtils {
       .rpc();
 
     return { txSig };
+  }
+
+  async createCertificate(
+    manager: PublicKey| Keypair,
+    batch: PublicKey,
+    studentKey: PublicKey, 
+    completeDate: number,
+    studentName: string,
+    studentGrade: string,
+    courseName: string,
+    schoolName: string,
+    schoolUri: string,
+    issuerName: string,
+    issuerRole: string,
+    issuerUri: string,
+  ) {
+    const signers  = [];
+    if (isKp(manager)) signers.push(<Keypair>manager)
+
+    const managerPk = (isKp(manager)? (<Keypair>manager).publicKey: manager) as PublicKey;
+    const [managerProof, _] = await this.findManagerProofPDA(managerPk);
+    const [certificate, certificateBump] = await this.findNewCertificatePDA(batch);
+
+    const txSig = await this.elearnProgram.methods.createCertificate(
+      new BN(completeDate),
+      certificateBump,
+      studentName,
+      studentGrade,
+      courseName,
+      schoolName,
+      schoolUri,
+      issuerName,
+      issuerRole,
+      issuerUri
+    ).accounts({
+      manager: managerPk,
+      managerProof,
+      batch,
+      certificate,
+      studentKey,
+      systemProgram: SystemProgram.programId
+    }).signers(signers)
+    .rpc();
+
+    return { txSig }
   }
 }

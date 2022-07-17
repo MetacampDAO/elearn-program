@@ -188,5 +188,116 @@ describe("elearn", () => {
       "BACKEND DEVELOPMENT WITH RUST (BATCH 0)",
     )).to.be.rejectedWith("AnchorError occurred. Error Code: WrongPermission. Error Number: 6003. Error Message: wrong permission type.")
   })
+
+  it ("Creates certificate", async () => {
+    const [manager1batch0PDA, _manager1batch0Bump] = await ec.findBatchPDA(manager1.publicKey, 0);
+    const [batch0cert0PDA, batch0cert0Bump] = await ec.findNewCertificatePDA(manager1batch0PDA);
+    
+    await ec.createCertificate(
+      manager1,
+      manager1batch0PDA,
+      manager2.publicKey,
+      1658448000,
+      "ALEX TAN XIAO MING",
+      "DISTINCTION",
+      "BACKEND DEVELOPMENT WITH RUST",
+      "METACAMP",
+      "",
+      "JUSTIN WONG",
+      "ACADEMIC DIRECTOR",
+      ""
+    )
+
+    const batch0cert0Acc = await ec.fetchCertificateAcc(batch0cert0PDA);
+
+    assert.equal(batch0cert0Acc.batchPda.toBase58(), manager1batch0PDA.toBase58())
+    assert.equal(batch0cert0Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
+    assert.equal(batch0cert0Acc.studentKey.toBase58(), manager2.publicKey.toBase58())
+    assert.ok(Number(batch0cert0Acc.completeDate) == 1658448000)
+    assert.ok(Number(batch0cert0Acc.certificateNum) == 0)
+    assert.ok(batch0cert0Acc.certificateBump == batch0cert0Bump)
+
+    assert.equal(batch0cert0Acc.studentName, "ALEX TAN XIAO MING")
+    assert.equal(batch0cert0Acc.studentGrade, "DISTINCTION")
+    assert.equal(batch0cert0Acc.courseName, "BACKEND DEVELOPMENT WITH RUST")
+    assert.equal(batch0cert0Acc.schoolName, "METACAMP")
+    assert.equal(batch0cert0Acc.schoolUri, "")
+    assert.equal(batch0cert0Acc.issuerName, "JUSTIN WONG")
+    assert.equal(batch0cert0Acc.issuerRole, "ACADEMIC DIRECTOR")
+    assert.equal(batch0cert0Acc.issuerUri, "")
+
+    const [batch0cert1PDA, batch0cert1Bump] = await ec.findNewCertificatePDA(manager1batch0PDA);
+    
+    await ec.createCertificate(
+      manager1,
+      manager1batch0PDA,
+      manager2.publicKey,
+      1658448000,
+      "ALEX TAN XIAO MING",
+      "DISTINCTION",
+      "BACKEND DEVELOPMENT WITH RUST",
+      "METACAMP",
+      "",
+      "JUSTIN WONG",
+      "ACADEMIC DIRECTOR",
+      ""
+    )
+
+    const batch0cert1Acc = await ec.fetchCertificateAcc(batch0cert1PDA);
+
+    assert.equal(batch0cert1Acc.batchPda.toBase58(), manager1batch0PDA.toBase58())
+    assert.equal(batch0cert1Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
+    assert.equal(batch0cert1Acc.studentKey.toBase58(), manager2.publicKey.toBase58())
+    assert.ok(Number(batch0cert1Acc.completeDate) == 1658448000)
+    assert.ok(Number(batch0cert1Acc.certificateNum) == 1)
+    assert.ok(batch0cert1Acc.certificateBump == batch0cert1Bump)
+
+    assert.equal(batch0cert1Acc.studentName, "ALEX TAN XIAO MING")
+    assert.equal(batch0cert1Acc.studentGrade, "DISTINCTION")
+    assert.equal(batch0cert1Acc.courseName, "BACKEND DEVELOPMENT WITH RUST")
+    assert.equal(batch0cert1Acc.schoolName, "METACAMP")
+    assert.equal(batch0cert1Acc.schoolUri, "")
+    assert.equal(batch0cert1Acc.issuerName, "JUSTIN WONG")
+    assert.equal(batch0cert1Acc.issuerRole, "ACADEMIC DIRECTOR")
+    assert.equal(batch0cert1Acc.issuerUri, "")
+
+    const [manager1batch1PDA, _manager1batch1Bump] = await ec.findBatchPDA(manager1.publicKey, 1);
+    const [batch1cert0PDA, batch1cert0Bump] = await ec.findNewCertificatePDA(manager1batch1PDA);
+    
+    await ec.createCertificate(
+      manager1,
+      manager1batch1PDA,
+      manager2.publicKey,
+      1658448000,
+      "ALEX TAN XIAO MING",
+      "DISTINCTION",
+      "BACKEND DEVELOPMENT WITH RUST",
+      "METACAMP",
+      "",
+      "JUSTIN WONG",
+      "ACADEMIC DIRECTOR",
+      ""
+    )
+
+    const batch1cert0Acc = await ec.fetchCertificateAcc(batch1cert0PDA);
+
+    assert.equal(batch1cert0Acc.batchPda.toBase58(), manager1batch1PDA.toBase58())
+    assert.equal(batch1cert0Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
+    assert.equal(batch1cert0Acc.studentKey.toBase58(), manager2.publicKey.toBase58())
+    assert.ok(Number(batch1cert0Acc.completeDate) == 1658448000)
+    assert.ok(Number(batch1cert0Acc.certificateNum) == 0)
+    assert.ok(batch1cert0Acc.certificateBump == batch1cert0Bump)
+
+    assert.equal(batch1cert0Acc.studentName, "ALEX TAN XIAO MING")
+    assert.equal(batch1cert0Acc.studentGrade, "DISTINCTION")
+    assert.equal(batch1cert0Acc.courseName, "BACKEND DEVELOPMENT WITH RUST")
+    assert.equal(batch1cert0Acc.schoolName, "METACAMP")
+    assert.equal(batch1cert0Acc.schoolUri, "")
+    assert.equal(batch1cert0Acc.issuerName, "JUSTIN WONG")
+    assert.equal(batch1cert0Acc.issuerRole, "ACADEMIC DIRECTOR")
+    assert.equal(batch1cert0Acc.issuerUri, "")
+    
+
+  })
   
 });
