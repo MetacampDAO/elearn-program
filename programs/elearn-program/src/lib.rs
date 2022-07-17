@@ -23,4 +23,13 @@ pub mod elearn {
     ) -> Result<()> {
         add_manager::handler(ctx, manager_bump)
     }
+
+    pub fn modify_manager(
+        ctx: Context<ModifyManager>,
+        target_permissions: u8,
+    ) -> Result<()> {
+        modify_manager::handler(ctx, target_permissions)
+    }
+
+
 }

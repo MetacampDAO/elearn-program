@@ -10,7 +10,7 @@ pub struct AddManager<'info> {
     constraint = admin_proof.manager_key == admin.to_account_info().key()
       @ ErrorCode::ProofKeyMismatch,
     seeds = [MANAGER_PROOF_SEED, admin.to_account_info().key.as_ref()],
-    bump
+    bump = admin_proof.manager_bump,
   )]
   pub admin_proof: Account<'info, Manager>,
   /// CHECK: This is not dangerous because we don't read or write from this account
