@@ -16,5 +16,9 @@ pub struct Batch {
 }
 
 impl Batch {
-
+  pub fn initialize(&mut self, manager_key: Pubkey, batch_name: String){
+    self.manager_key = manager_key;
+    self.certificate_count = 0;
+    self.batch_name = batch_name;
+  }
 }

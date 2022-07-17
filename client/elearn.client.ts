@@ -2,7 +2,7 @@ import * as anchor from '@project-serum/anchor';
 import { BN, Idl, Program, AnchorProvider } from '@project-serum/anchor';
 import { Connection, Keypair, PublicKey, SystemProgram } from '@solana/web3.js';
 import { Elearn } from '../target/types/elearn';
-import { AccountUtils, toBN, isKp } from './common';
+import { AccountUtils, toBN, isKp,  toByteArray} from './common';
 
 export class ElearnClient extends AccountUtils {
   // @ts-ignore
@@ -54,6 +54,10 @@ export class ElearnClient extends AccountUtils {
     return this.elearnProgram.account.manager.fetch(managerPDA);
   }
 
+  async fetchBatchAcc(batchPDA) {
+    return this.elearnProgram.account.batch.fetch(batchPDA);
+  }
+
   // --------------------------------------- find PDA adsdresses
 
   async findManagerProofPDA(managerKey: PublicKey) {
@@ -63,6 +67,23 @@ export class ElearnClient extends AccountUtils {
     )
   }
 
+  async findBatchPDA(managerKey: PublicKey, batchCount: number) {
+    return await PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("batch-seed")), 
+        managerKey.toBytes(), 
+        toByteArray(batchCount)
+      ],
+      this.elearnProgram.programId
+    )
+  }
+
+  async findNewBatchPDA(managerKey: PublicKey) {
+    const [managerProofPDA, _] = await this.findManagerProofPDA(managerKey);
+    const managerProofAcc = await this.fetchManagerProofAcc(managerProofPDA);
+    const nextBatchCount = Number(managerProofAcc.batchCount)
+    return await this.findBatchPDA(managerKey, nextBatchCount)
+  }
   // --------------------------------------- find all PDA addresses
 
   // --------------------------------------- elearn ixs
@@ -134,5 +155,26 @@ export class ElearnClient extends AccountUtils {
       .rpc();
 
       return { txSig };
+  }
+
+  async createBatch (
+    manager: PublicKey| Keypair,
+    managerProof: PublicKey,
+    batch: PublicKey,
+    batchName: string
+  ) {
+    const signers  = [];
+    if (isKp(manager)) signers.push(<Keypair>manager)
+
+    const managerPk = isKp(manager)? (<Keypair>manager).publicKey: manager;
+    const txSig = await this.elearnProgram.methods.createBatch(batchName)
+      .accounts({
+        manager: managerPk as any,
+        managerProof,
+        batch
+      }).signers(signers)
+      .rpc();
+
+    return { txSig };
   }
 }

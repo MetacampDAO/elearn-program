@@ -31,5 +31,11 @@ pub mod elearn {
         modify_manager::handler(ctx, target_permissions)
     }
 
+    pub fn create_batch(
+        ctx: Context<CreateBatch>,
+        batch_name: String,
+    ) -> Result<()> {
+        create_batch::handler(ctx, batch_name)
+    }
 
 }

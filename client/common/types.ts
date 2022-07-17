@@ -5,6 +5,10 @@ export function isKp(toCheck: PublicKey | Keypair) {
   return typeof (<Keypair>toCheck).publicKey !== 'undefined';
 }
 
+export function toByteArray(i: any): Buffer {
+  return toBN(i).toArrayLike(Buffer, 'le', 8)
+}
+
 export function toBN(i: any): any {
   if (typeof i == 'number') {
     return new BN(i);
