@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+pub const LATEST_CERTIFICATE_VERSION: u16 = 0;
+
 pub const CERTIFICATE_PDA_SEED: &[u8] = b"certificate-seed";
 
 pub const MAX_STUDENT_NAME_LEN: usize = 64;
@@ -16,7 +18,8 @@ pub const MAX_ISSUER_URI_LEN: usize = 200;
 
 
 
-pub const MAX_CERTIFICATE_LEN: usize = 32 // batch pda
+pub const MAX_CERTIFICATE_LEN: usize = 2 // version
+  + 32 // batch pda
   + 32  // manager key
   + 32  // student key
   + 8   // completion date
@@ -33,6 +36,7 @@ pub const MAX_CERTIFICATE_LEN: usize = 32 // batch pda
 
 #[account]
 pub struct Certificate {
+  pub version: u16,
   pub batch_pda: Pubkey,
   pub manager_key: Pubkey,
   pub student_key: Pubkey,
@@ -66,6 +70,7 @@ impl Certificate {
     issuer_role:String,
     issuer_uri: String,
   ) {
+    self.version = LATEST_CERTIFICATE_VERSION;
     self.batch_pda = batch_pda;
     self.manager_key = manager_key;
     self.student_key = student_key;

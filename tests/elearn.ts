@@ -3,6 +3,8 @@ import * as anchor from "@project-serum/anchor";
 import {ElearnClient} from '../client/elearn.client';
 import chai, { assert, expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import * as elIdl from '../target/idl/elearn.json';
+import { PublicKey } from '@solana/web3.js';
 
 chai.use(chaiAsPromised);
 
@@ -10,8 +12,9 @@ describe("elearn", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
+  const programId = new PublicKey("9UZhEPPrzXSAScvZ2cDF1GgYGJTZrAcPUEwNGLvvu9Pr");
 
-  const ec = new ElearnClient(provider.connection, provider.wallet as any)
+  const ec = new ElearnClient(provider.connection, provider.wallet as any, elIdl as any, programId)
 
   const manager1 = anchor.web3.Keypair.generate(); // can create cert + batch
   const manager2 = anchor.web3.Keypair.generate(); // can create cert only

@@ -1,9 +1,12 @@
 use anchor_lang::prelude::*;
 use common::errors::ErrorCode;
 
+pub const LATEST_MANAGER_VERSION: u16 = 0;
+
 pub const MANAGER_PROOF_SEED: &[u8] = b"manager-seed";
 
-pub const MAX_MANAGER_LEN: usize = 32 // manager pubkey
+pub const MAX_MANAGER_LEN: usize = 2 // version
+  + 32  // manager pubkey
   + 8   // total batches created
   + 16  // total certificates created
   + 1   // permission_type
@@ -11,6 +14,7 @@ pub const MAX_MANAGER_LEN: usize = 32 // manager pubkey
 
 #[account]
 pub struct Manager {
+  pub version: u16,
   pub manager_key: Pubkey,
   pub batch_count: u64,
   pub certificate_count: u128,
@@ -30,6 +34,7 @@ bitflags::bitflags! {
 impl Manager {
   
   pub fn initialize(&mut self, manager_key: Pubkey, manager_bump: u8) {
+    self.version = LATEST_MANAGER_VERSION;
     self.manager_key = manager_key;
     self.manager_bump = manager_bump;
     self.batch_count = 0;

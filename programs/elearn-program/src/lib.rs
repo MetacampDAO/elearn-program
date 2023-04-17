@@ -4,7 +4,7 @@ use instructions::*;
 pub mod instructions;
 pub mod states;
 
-declare_id!("93XaPPTDiKJGfzSKkHHLn3uu8gpgAUXwhVWR74ps8dgJ");
+declare_id!("9UZhEPPrzXSAScvZ2cDF1GgYGJTZrAcPUEwNGLvvu9Pr");
 
 #[program]
 pub mod elearn {
