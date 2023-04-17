@@ -1,10 +1,10 @@
 import * as anchor from "@project-serum/anchor";
 
-import {ElearnClient} from '../client/elearn.client';
-import chai, { assert, expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import * as elIdl from '../target/idl/elearn.json';
-import { PublicKey } from '@solana/web3.js';
+import { ElearnClient } from "../client/elearn.client";
+import chai, { assert, expect } from "chai";
+import chaiAsPromised from "chai-as-promised";
+import * as elIdl from "../target/idl/elearn.json";
+import { PublicKey } from "@solana/web3.js";
 
 chai.use(chaiAsPromised);
 
@@ -12,13 +12,19 @@ describe("elearn", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
-  const programId = new PublicKey("9UZhEPPrzXSAScvZ2cDF1GgYGJTZrAcPUEwNGLvvu9Pr");
+  const programId = new PublicKey(
+    "9UZhEPPrzXSAScvZ2cDF1GgYGJTZrAcPUEwNGLvvu9Pr"
+  );
 
-  const ec = new ElearnClient(provider.connection, provider.wallet as any, elIdl as any, programId)
+  const ec = new ElearnClient(
+    provider.connection,
+    provider.wallet as any,
+    elIdl as any,
+    programId
+  );
 
   const manager1 = anchor.web3.Keypair.generate(); // can create cert + batch
   const manager2 = anchor.web3.Keypair.generate(); // can create cert only
-
 
   it("Airdrops to manager1", async () => {
     // airdrop to manager1
@@ -151,7 +157,7 @@ describe("elearn", () => {
       manager1PDA,
       "BACKEND DEVELOPMENT WITH RUST (BATCH 0)",
     );
-    
+
     const manager1batch0Acc = await ec.fetchBatchAcc(manager1batch0PDA);
     let manager1ProofAcc = await ec.fetchManagerProofAcc(manager1PDA);
 
@@ -169,7 +175,7 @@ describe("elearn", () => {
       manager1PDA,
       "BACKEND DEVELOPMENT WITH RUST (BATCH 1)",
     );
-    
+
     const manager1batch1Acc = await ec.fetchBatchAcc(manager1batch1PDA);
     manager1ProofAcc = await ec.fetchManagerProofAcc(manager1PDA);
 
@@ -191,14 +197,16 @@ describe("elearn", () => {
     )).to.be.rejectedWith("AnchorError occurred. Error Code: WrongPermission. Error Number: 6003. Error Message: wrong permission type.")
   })
 
-  it ("Creates certificate", async () => {
+  it("Creates certificate", async () => {
     const [manager1batch0PDA, _manager1batch0Bump] = await ec.findBatchPDA(manager1.publicKey, 0);
     const [batch0cert0PDA, batch0cert0Bump] = await ec.findNewCertificatePDA(manager1batch0PDA);
-    
+
     await ec.createCertificate(
       manager1,
       manager1batch0PDA,
       manager2.publicKey,
+      1658446000,
+      1658447000,
       1658448000,
       "ALEX TAN XIAO MING",
       "DISTINCTION",
@@ -215,6 +223,9 @@ describe("elearn", () => {
     assert.equal(batch0cert0Acc.batchPda.toBase58(), manager1batch0PDA.toBase58())
     assert.equal(batch0cert0Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
     assert.equal(batch0cert0Acc.studentKey.toBase58(), manager2.publicKey.toBase58())
+    assert.ok(Number(batch0cert0Acc.version) == 1)
+    assert.ok(Number(batch0cert0Acc.startDate) == 1658446000)
+    assert.ok(Number(batch0cert0Acc.endDate) == 1658447000)
     assert.ok(Number(batch0cert0Acc.completeDate) == 1658448000)
     assert.ok(Number(batch0cert0Acc.certificateNum) == 0)
     assert.ok(batch0cert0Acc.certificateBump == batch0cert0Bump)
@@ -229,11 +240,13 @@ describe("elearn", () => {
     assert.equal(batch0cert0Acc.issuerUri, "")
 
     const [batch0cert1PDA, batch0cert1Bump] = await ec.findNewCertificatePDA(manager1batch0PDA);
-    
+
     await ec.createCertificate(
       manager1,
       manager1batch0PDA,
       manager2.publicKey,
+      1658446000,
+      1658447000,
       1658448000,
       "ALEX TAN XIAO MING",
       "DISTINCTION",
@@ -250,26 +263,31 @@ describe("elearn", () => {
     assert.equal(batch0cert1Acc.batchPda.toBase58(), manager1batch0PDA.toBase58())
     assert.equal(batch0cert1Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
     assert.equal(batch0cert1Acc.studentKey.toBase58(), manager2.publicKey.toBase58())
-    assert.ok(Number(batch0cert1Acc.completeDate) == 1658448000)
-    assert.ok(Number(batch0cert1Acc.certificateNum) == 1)
+    assert.ok(Number(batch0cert1Acc.version) == 1)
+    assert.ok(Number(batch0cert1Acc.startDate) == 1658446000)
+    assert.ok(Number(batch0cert1Acc.endDate) == 1658447000)
+    assert.ok(Number(batch0cert1Acc.completeDate) == 1658448000);
+    assert.ok(Number(batch0cert1Acc.certificateNum) == 1);
     assert.ok(batch0cert1Acc.certificateBump == batch0cert1Bump)
 
-    assert.equal(batch0cert1Acc.studentName, "ALEX TAN XIAO MING")
-    assert.equal(batch0cert1Acc.studentGrade, "DISTINCTION")
-    assert.equal(batch0cert1Acc.courseName, "BACKEND DEVELOPMENT WITH RUST")
-    assert.equal(batch0cert1Acc.schoolName, "METACAMP")
-    assert.equal(batch0cert1Acc.schoolUri, "")
-    assert.equal(batch0cert1Acc.issuerName, "JUSTIN WONG")
-    assert.equal(batch0cert1Acc.issuerRole, "ACADEMIC DIRECTOR")
-    assert.equal(batch0cert1Acc.issuerUri, "")
+    assert.equal(batch0cert1Acc.studentName, "ALEX TAN XIAO MING");
+    assert.equal(batch0cert1Acc.studentGrade, "DISTINCTION");
+    assert.equal(batch0cert1Acc.courseName, "BACKEND DEVELOPMENT WITH RUST");
+    assert.equal(batch0cert1Acc.schoolName, "METACAMP");
+    assert.equal(batch0cert1Acc.schoolUri, "");
+    assert.equal(batch0cert1Acc.issuerName, "JUSTIN WONG");
+    assert.equal(batch0cert1Acc.issuerRole, "ACADEMIC DIRECTOR");
+    assert.equal(batch0cert1Acc.issuerUri, "");
 
     const [manager1batch1PDA, _manager1batch1Bump] = await ec.findBatchPDA(manager1.publicKey, 1);
     const [batch1cert0PDA, batch1cert0Bump] = await ec.findNewCertificatePDA(manager1batch1PDA);
-    
+
     await ec.createCertificate(
       manager1,
       manager1batch1PDA,
       manager2.publicKey,
+      1658446000,
+      1658447000,
       1658448000,
       "ALEX TAN XIAO MING",
       "DISTINCTION",
@@ -283,9 +301,13 @@ describe("elearn", () => {
 
     const batch1cert0Acc = await ec.fetchCertificateAcc(batch1cert0PDA);
 
+
     assert.equal(batch1cert0Acc.batchPda.toBase58(), manager1batch1PDA.toBase58())
     assert.equal(batch1cert0Acc.managerKey.toBase58(), manager1.publicKey.toBase58())
     assert.equal(batch1cert0Acc.studentKey.toBase58(), manager2.publicKey.toBase58())
+    assert.ok(Number(batch1cert0Acc.version) == 1)
+    assert.ok(Number(batch1cert0Acc.startDate) == 1658446000)
+    assert.ok(Number(batch1cert0Acc.endDate) == 1658447000)
     assert.ok(Number(batch1cert0Acc.completeDate) == 1658448000)
     assert.ok(Number(batch1cert0Acc.certificateNum) == 0)
     assert.ok(batch1cert0Acc.certificateBump == batch1cert0Bump)
@@ -298,6 +320,5 @@ describe("elearn", () => {
     assert.equal(batch1cert0Acc.issuerName, "JUSTIN WONG")
     assert.equal(batch1cert0Acc.issuerRole, "ACADEMIC DIRECTOR")
     assert.equal(batch1cert0Acc.issuerUri, "")
-  })
-  
+  });
 });

@@ -32,6 +32,8 @@ pub mod elearn {
 
     pub fn create_certificate(
         ctx: Context<CreateCertificate>,
+        start_date: u64,
+        end_date: u64,
         complete_date: u64,
         certificate_bump: u8,
         student_name: String,
@@ -45,6 +47,8 @@ pub mod elearn {
     ) -> Result<()> {
         create_certificate::handler(
             ctx,
+            start_date,
+            end_date,
             complete_date,
             certificate_bump,
             student_name,
