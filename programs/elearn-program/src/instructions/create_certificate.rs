@@ -33,7 +33,7 @@ pub struct CreateCertificate<'info> {
     payer = manager,
     space = 8 + MAX_CERTIFICATE_LEN
   )]
-  pub certificate: Account<'info, Certificate>,
+  pub certificate: Account<'info, CertificateV1>,
   /// CHECK: This is not dangerous because we don't read or write from this account
   pub student_key: AccountInfo<'info>,
   pub system_program: Program<'info, System>,
@@ -45,6 +45,8 @@ impl <'info> CreateCertificate <'info> {
 
 pub fn handler (
   ctx: Context<CreateCertificate>,
+  start_date: u64,
+  end_date: u64,
   complete_date: u64,
   certificate_bump: u8,
   student_name: String,
@@ -61,6 +63,8 @@ pub fn handler (
     ctx.accounts.batch.to_account_info().key(), 
     ctx.accounts.manager.key(), 
     ctx.accounts.student_key.key(), 
+    start_date, 
+    end_date, 
     complete_date, 
     ctx.accounts.batch.certificate_count, 
     certificate_bump, 
