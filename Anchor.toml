@@ -1,14 +1,14 @@
 [features]
 seeds = false
 [programs.localnet]
-elearn = "93XaPPTDiKJGfzSKkHHLn3uu8gpgAUXwhVWR74ps8dgJ"
+elearn = "9UZhEPPrzXSAScvZ2cDF1GgYGJTZrAcPUEwNGLvvu9Pr"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
-wallet = "/Users/vincentleow/.config/solana/jake.json"
+cluster = "mainnet"
+wallet = "/Users/jonasxchen/GitHub/metacamp/elearn-program/authority-keypair.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
